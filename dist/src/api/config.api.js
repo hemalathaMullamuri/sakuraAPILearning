@@ -62,7 +62,11 @@ let ConfigApi = class ConfigApi extends api_1.SapiRoutableMixin() {
             try {
                 locals
                     .send(http_status_1.OK, {
+<<<<<<< HEAD
                     server: 'sakuraclassexample',
+=======
+                    server: 'sakuraleaning',
+>>>>>>> 2e293db1c7c010f382ed29edfd57694d2fb6282a
                     serverUp: true
                 });
             }

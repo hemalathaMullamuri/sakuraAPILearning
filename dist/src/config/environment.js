@@ -1,10 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 const db_1 = require("./bootstrap/db");
 const MONGO_DB_ADDRESS = process.env.MONGO_DB_ADDRESS || 'localhost';
 const MONGO_DB_PORT = process.env.MONGO_DB_PORT || '37001';
 const MONGO_DB_CONN = process.env.MONGO_DB_CONN || null;
 const MONGO_DB_NAME = process.env.MONGO_DB_NAME || 'sample';
+=======
+const MONGO_DB_ADDRESS = process.env.MONGO_DB_ADDRESS || 'localhost';
+const MONGO_DB_PORT = process.env.MONGO_DB_PORT || '37001';
+const MONGO_DB_CONN = process.env.MONGO_DB_CONN || null;
+const MONGO_DB_NAME = process.env.MONGO_DB_NAME || 'test';
+>>>>>>> 2e293db1c7c010f382ed29edfd57694d2fb6282a
 const url = MONGO_DB_CONN || `mongodb://${MONGO_DB_ADDRESS}:${MONGO_DB_PORT}/${MONGO_DB_NAME}`;
 module.exports = {
     cors: {
@@ -12,6 +19,7 @@ module.exports = {
         methods: ['GET', 'POST', 'PUT', 'DELETE'],
         origin: ['*']
     },
+<<<<<<< HEAD
     dbConnections: [
         {
             mongoClientOptions: {},
@@ -19,6 +27,9 @@ module.exports = {
             url
         }
     ],
+=======
+    dbConnections: [],
+>>>>>>> 2e293db1c7c010f382ed29edfd57694d2fb6282a
     logging: {
         transports: [
             {
