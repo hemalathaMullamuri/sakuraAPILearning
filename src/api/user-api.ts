@@ -2,8 +2,7 @@ import {
   Routable,
   Route,
   SakuraApi,
-  SapiRoutableMixin,
-  IRoutableLocals
+  SapiRoutableMixin
 } from '@sakuraapi/api';
 import {
   NextFunction,
@@ -11,41 +10,84 @@ import {
   Response
 } from 'express';
 
-import {LogService} from '../services/log-service';
-import { UserModel } from '../models/user-model';
+import { User } from '../models/user-model';
+import {error} from "util";
 
 export { SakuraApi };
 
 @Routable({
-  baseUrl:'users',
-  model:UserModel
+  baseUrl: 'users',
+  model: User,
+  suppressApi: true
 })
 export class UserApi extends SapiRoutableMixin() {
-  constructor(private logService:LogService) {
-    super();
-  }
-  @Route({
-    method: 'get',
-    path: '/usersData'
-  })
-  getUsers(req: Request, res: Response,next :NextFunction) {
-    console.log('coming to getusers');
-    const custRes = res.locals as IRoutableLocals;
-    custRes.send(200 , {msg : 'Hello World', error : 'No error'});
-    next();
-    }
 
+  // @Route({
+  //   method: 'get',
+  //   path: ':name'
+  // })
+  // getUsers(req: Request, res: Response, next: NextFunction) {
+  //   res.send({data: req.params.name}).status(200);
+  //   next();
+  // }
   @Route({
     method: 'post',
-    path: '/saveUser'
+    path: '/save'
   })
-  saveUser(req: Request, res: Response, next: NextFunction) {
-    console.log(req.body);
-    const user = req.body.name;
-    this.logService.info('savingUser',user);
-    const custRes = res.locals as IRoutableLocals;
-    custRes.send(200 ,{msg:'this is checking post data from '+ req.body.name,error:'No error'});
+  async  sendUsers(req: Request, res: Response, next: NextFunction) {
+    const user = User.fromJson(req.body);
+    let u;
+    try {
+      u = await  user.create();
+    } catch (err) {
+      u = {message: err.message};
+    }
+    res.send(u).status(200);
+  }
+
+  @Route({
+    method: 'get',
+    path: '/getData'
+  })
+  async  getUsers(req: Request, res: Response, next: NextFunction) {
+    let u;
+    try {
+      u = await  User.get({filter: {}});
+    } catch (err) {
+      u = {message: err.message};
+    }
+    res.send(u).status(200);
+  }
+  @Route({
+    method: 'put',
+    path: ':id'
+  })
+  async updateUser(req: Request, res: Response, next: NextFunction) {
+    req.body.id = req.params.id;
+    const user = User.fromJson(req.body);
+    let updateU;
+    try {
+      updateU = await user.save();
+    } catch (err) {
+      updateU = { message: err.message };
+    }
+    res.send(updateU).status(200);
     next();
-    
+  }
+
+  @Route({
+    method: 'delete',
+    path: ':id'
+  })
+  async deleteUser(req: Request, res: Response, next: NextFunction) {
+    const userId = req.params.id;
+    let updateU;
+    try {
+      updateU = await User.removeById(req.params.id);
+    } catch (err) {
+      updateU = { message: err.message };
+    }
+    res.send(updateU).status(200);
+    next();
   }
 }
